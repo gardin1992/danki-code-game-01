@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -95,6 +96,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public Font fontTitle;
 	public Font fontText;
 	
+	public int[] pixels;
+	
 	public int mx,my;
 	
 	public Game() {
@@ -111,6 +114,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		menu = new Menu();
 		ui = new UI();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		score = new Score();
 		
 		initializeFonts();
@@ -255,6 +259,22 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			g.drawString(">Presseione Enter para Reiniciar!<", (WIDTH*SCALE/2) - 20 - 200, (HEIGHT*SCALE/2) + 40);
 	}
 	
+	// ------ trabalhando com pixels
+	/*
+	public void drawRectangleExample(int xoff, int yoff) {
+		for(int xx = 0; xx < 32; xx++) {
+			for(int yy = 0; yy < 32; yy++) {
+			
+				int xOff = xx + xoff;
+				int yOff = yy + yoff;
+				if (xOff < 0 || yOff < 0 || xOff >= WIDTH || yOff > HEIGHT)
+					continue;
+				
+				pixels[xOff + (yOff*WIDTH)] = 0xff0000;
+			}
+		}
+	}
+	*/
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
 		
@@ -268,7 +288,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		/* Render the game */
-		
 		
 		world.render(g);
 		ui.render(g);
@@ -286,6 +305,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		/***/
 		g.dispose();
 		g = bs.getDrawGraphics();
+		
 		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
 		g.setFont(fontText);
 		g.setColor(Color.white);
