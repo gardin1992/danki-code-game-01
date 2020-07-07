@@ -33,6 +33,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		MENU
 	}
 
+	public static Game instance; 
 	/**
 	 * initial constructor
 	 * 
@@ -40,6 +41,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	 */
 	public static void main(String[] args) {
 		Game game = new Game();
+		Game.instance = game;
 		game.start();
 	}
 	
@@ -80,7 +82,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	
 	// ------ Menu
 	private Menu menu;
-	
+	public boolean saveGame = false;
 	
 	public Game() {
 		Sound.musicBackground.loop();
@@ -98,7 +100,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		score = new Score();
 		
-		initialized(getLevelName());
+		initialized(getLevelName(CUR_LEVEL));
 	}
 	
 	public static void initialized(String level)
@@ -147,8 +149,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		}		
 	}
 	
-	public String getLevelName() {
-		return "level"+CUR_LEVEL+".png";
+	public static String getLevelName(int level) {
+		return "level"+level+".png";
 	}
 	
 	public void tick() {
@@ -165,7 +167,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 					restartGame = false;
 					state = State.NORMAL;
 					CUR_LEVEL = 1;
-					World.restartGame(getLevelName());
+					World.restartGame(getLevelName(CUR_LEVEL));
 				}
 				break;
 			
@@ -177,6 +179,16 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 				world.tick();
 				score.tick();
 				restartGame = false;
+				
+				if (this.saveGame) {
+					this.saveGame = false;
+					
+					String[] opt1 = {"level"};
+					int[] opt2 = {this.CUR_LEVEL};
+					Menu.saveGame(opt1, opt2, 10);
+					System.out.println("Jogo salvo com sucesso");
+				}
+				
 				for (int i = 0; i < entities.size(); i++)
 				{
 					Entity e = entities.get(i);
@@ -337,6 +349,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		if (e.getKeyCode() == KeyEvent.VK_F) {
 			player.inAttack = true;
 			player.shoot = true;
+		}
+		
+		if (e.getKeyCode() == KeyEvent.VK_J) {
+			if (state == State.NORMAL )
+				this.saveGame = true;
 		}
 	}
 
