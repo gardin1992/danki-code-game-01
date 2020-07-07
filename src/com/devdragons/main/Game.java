@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.devdragons.entities.*;
@@ -97,6 +98,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public Font fontText;
 	
 	public int[] pixels;
+	public BufferedImage lightMap;
+	public int[] lightMapPixels;
 	
 	public int mx,my;
 	
@@ -114,6 +117,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		menu = new Menu();
 		ui = new UI();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		try {
+			lightMap = ImageIO.read(getClass().getResource("/light.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		lightMapPixels = new int[lightMap.getWidth() * lightMap.getHeight()];
+		lightMap.getRGB(0, 0, lightMap.getWidth(), lightMap.getHeight(), lightMapPixels, 0, lightMap.getWidth());
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		score = new Score();
 		
@@ -275,6 +285,18 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		}
 	}
 	*/
+	
+	public void applyLight() {
+		for(int xx = 0; xx < Game.WIDTH; xx++) {
+			for(int yy = 0; yy < Game.HEIGHT; yy++) {
+				
+				if (lightMapPixels[xx+(yy * Game.WIDTH)] == 0xffffffff) {
+					pixels[xx+(yy*Game.WIDTH)] = 0;
+				}
+			}
+		}
+	}
+	
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
 		
@@ -288,9 +310,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		/* Render the game */
-		
+
+	
 		world.render(g);
-		ui.render(g);
 		for (int i = 0; i < entities.size(); i++)
 		{
 			Entity e = entities.get(i);
@@ -301,12 +323,16 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		{
 			bullets.get(i).render(g);
 		}
-		
+		applyLight();
+		ui.render(g);
 		/***/
 		g.dispose();
-		g = bs.getDrawGraphics();
+
 		
+		g = bs.getDrawGraphics();
+
 		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+
 		g.setFont(fontText);
 		g.setColor(Color.white);
 		g.drawString("Level " + CUR_LEVEL, 360, 20);
