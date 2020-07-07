@@ -1,7 +1,6 @@
 package com.devdragons.main;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
@@ -18,11 +17,11 @@ import com.devdragons.main.Game.State;
 import com.devdragons.world.World;
 public class Menu {
 	
-	public static final String NEW_GAME = "Novo Jogo",
-			LOAD = "Carregar",
-			OPTIONS = "Opções",
-			EXIT = "Sair",
-			CONTINUE = "Continuar";
+	public static final String NEW_GAME = "New Game",
+			LOAD = "Load",
+			OPTIONS = "Options",
+			EXIT = "Exit",
+			CONTINUE = "Continue";
 	
 	public int currentOption = 0;
 	public int maxOption;
@@ -102,6 +101,8 @@ public class Menu {
 	}
 	
 	private static final String FILE_NAME = "data.dat";
+
+	private static BufferedReader reader;
 	
 	public static void applySave(String str) {
 		String[] spr = str.split("/");
@@ -125,7 +126,7 @@ public class Menu {
 		if (file.exists()) {
 			try {
 				String singleLine = null;
-				BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
+				reader = new BufferedReader(new FileReader(FILE_NAME));
 				
 				while((singleLine = reader.readLine()) != null) {
 					String[] pieces = singleLine.split(":");
@@ -183,12 +184,12 @@ public class Menu {
 		g2.setColor(new Color(0, 0, 0, 100));
 		g2.fillRect(0, 0, Game.WIDTH*Game.SCALE, Game.HEIGHT*Game.SCALE);
 		
-		g.setFont(new Font("Arial", Font.BOLD, 28));
+		g.setFont(Game.instance.fontTitle);
 		g.setColor(Color.white);
-		g.drawString(">Danki.Code<", 80, 30);
+		g.drawString("Danki.Code", 80, 30);
 		
 		// ---- options
-		g.setFont(new Font("Arial", Font.BOLD, 16));
+		g.setFont(Game.instance.fontText);
 		g.setColor(Color.white);
 		
 		List<String> options = getList();
@@ -204,7 +205,7 @@ public class Menu {
 			}
 		}
 		
-		g.setFont(new Font("Arial", Font.BOLD, 16));
+		g.setFont(Game.instance.fontText);
 		g.setColor(Color.white);
 		
 		for(int i = 0; i < maxOption; i++) {

@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -12,6 +13,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -84,6 +87,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	private Menu menu;
 	public boolean saveGame = false;
 	
+	public InputStream fontStream1 = ClassLoader.class.getResourceAsStream("/pixelart.ttf");
+	public InputStream fontStream2 = ClassLoader.class.getResourceAsStream("/pixelart.ttf");
+	public InputStream fontStream3 = ClassLoader.class.getResourceAsStream("/pixelart.ttf");
+	public Font font16;
+	public Font fontTitle;
+	public Font fontText;
+	
 	public Game() {
 		Sound.musicBackground.loop();
 		
@@ -100,7 +110,24 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		score = new Score();
 		
+		initializeFonts();
 		initialized(getLevelName(CUR_LEVEL));
+	}
+	
+	public void initializeFonts() {
+
+		try {
+			
+			fontTitle = Font.createFont(Font.TRUETYPE_FONT, fontStream1).deriveFont(28f);
+			fontText = Font.createFont(Font.TRUETYPE_FONT, fontStream3).deriveFont(16f);
+			font16 = Font.createFont(Font.TRUETYPE_FONT, fontStream2).deriveFont(16f);
+			
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static void initialized(String level)
@@ -218,7 +245,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(new Color(0, 0, 0, 100));
 		g2.fillRect(0, 0, WIDTH*SCALE, HEIGHT*SCALE);
-		g.setFont(new Font("Arial", Font.BOLD, 28));
+		g.setFont(fontTitle);
 		g.setColor(Color.white);
 		g.drawString("Game Over", (WIDTH*SCALE/2) - 80, (HEIGHT*SCALE/2));
 		
@@ -258,13 +285,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		g.dispose();
 		g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
-		g.setFont(new Font("Arial", Font.BOLD, 17));
+		g.setFont(fontText);
 		g.setColor(Color.white);
-		g.drawString("Level: " + CUR_LEVEL, 360, 20);
+		g.drawString("Level " + CUR_LEVEL, 360, 20);
 		
-		g.setFont(new Font("Arial", Font.BOLD, 17));
+		g.setFont(fontText);
 		g.setColor(Color.white);
-		g.drawString("Munição: " + player.ammo, 500, 20);
+		g.drawString("Ammo " + player.ammo, 500, 20);
 		
 		switch(state) {
 			case GAME_OVER: renderGameOver(g); break;

@@ -1,7 +1,6 @@
 package com.devdragons.main;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.util.Timer;
 
@@ -36,8 +35,8 @@ public class Score {
 	}
 	
 	public void render(Graphics g) {
-		g.setFont(new Font("Arial", Font.BOLD, 17));
+		g.setFont(Game.instance.fontText);
 		g.setColor(Color.white);
-		g.drawString("SCORE: " + getScore(), 360, 50);
+		g.drawString("SCORE " + getScore(), 360, 50);
 	}
 }
