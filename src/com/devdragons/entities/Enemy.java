@@ -54,6 +54,9 @@ public class Enemy extends Entity {
 	
 	@Override
 	public void tick() {
+		if (this.calculateDistance(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 100) {
+			
+		
 		if (this.isCollidingWithPlayer() == false) {
 		
 			if ((int)x < Game.player.getX() 
@@ -94,7 +97,7 @@ public class Enemy extends Entity {
 				Game.player.isDamaged = true;
 			}
 		}
-			
+		}
 		frames++;
 				
 		if (frames == maxFrames) {

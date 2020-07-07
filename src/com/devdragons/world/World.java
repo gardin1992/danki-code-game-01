@@ -16,6 +16,8 @@ public class World {
 	public static final int TILE_SIZE = 16;
 	public static int zplayer = 0;
 	
+	public static final int COLOR_FLOR = 0xFF000000;
+	
 	public World(String path) {
 		
 		try {
@@ -37,11 +39,18 @@ public class World {
 					switch(pixelAtual) {
 						case 0xFF000000: 
 							// floor
-							tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR); 
+							tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_GRASS); 
 							break;
+						case 0xFFfbefef:
+							tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_SAND);
+							break;	
 						case 0xFFFFFFFF:
 							// wall
 							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
+							break;
+						case 0xFF8ad4e4:
+							// wather
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER);
 							break;
 						case 0xFF373f7E: 
 							// player
