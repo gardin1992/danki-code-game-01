@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -26,7 +27,7 @@ import com.devdragons.graficos.Spritesheet;
 import com.devdragons.graficos.UI;
 import com.devdragons.world.World;
 
-public class Game extends Canvas implements Runnable, KeyListener, MouseListener {
+public class Game extends Canvas implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -94,6 +95,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public Font fontTitle;
 	public Font fontText;
 	
+	public int mx,my;
+	
 	public Game() {
 		Sound.musicBackground.loop();
 		
@@ -101,8 +104,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		
 		addKeyListener(this);
 		addMouseListener(this);
-		
-		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+		addMouseMotionListener(this);
+		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		initFrame();
 		// init objects
 		menu = new Menu();
@@ -171,7 +174,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		try {
 			thread.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 	}
@@ -266,7 +268,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		/* Render the game */
-		// Graphics2D g2 = (Graphics2D) g;
+		
 		
 		world.render(g);
 		ui.render(g);
@@ -299,6 +301,14 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			default: score.render(g); break;
 		}
 		
+		// --- rotação acompanhando o mouse
+		/*
+		Graphics2D g2 = (Graphics2D) g;
+		double angleMouse = Math.atan2(200+25 - my, 200+25 + mx);
+		g2.rotate(angleMouse, 200 + 25, 200 + 25);
+		g.setColor(Color.red);
+		g.fillRect(200, 200, 50, 50);
+		*/
 		bs.show();
 	}
 	
@@ -434,7 +444,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	/* MOUSE */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+		
 		player.inAttack = true;
 		player.mouseShoot = true;
 		player.mx = (e.getX()/SCALE);
@@ -444,25 +454,33 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
+		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-
-		
-		
+		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// ------- pegar posição do mouse
+		this.my = e.getX();
+		this.my = e.getY();
 	}
 }
