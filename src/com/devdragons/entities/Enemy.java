@@ -5,7 +5,9 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.devdragons.main.Game;
+import com.devdragons.world.AStart;
 import com.devdragons.world.Camera;
+import com.devdragons.world.Vector2i;
 import com.devdragons.world.World;
 
 public class Enemy extends Entity {
@@ -19,10 +21,6 @@ public class Enemy extends Entity {
 	public static BufferedImage GOBLIN_RIGHT_FB = Game.spritesheet.getSprite(96, 64 + (2 * World.TILE_SIZE), World.TILE_SIZE, World.TILE_SIZE);
 	public static BufferedImage GOBLIN_LEFT_FB = Game.spritesheet.getSprite(96, 64 + (3 * World.TILE_SIZE), World.TILE_SIZE, World.TILE_SIZE);
 		
-	private double speed = 0.4;
-	
-	private int maskx = 0, masky = 0, maskw = 16, maskh = 16;
-	
 	protected BufferedImage[] rightSprites;
 	protected BufferedImage[] leftSprites;
 	
@@ -54,6 +52,8 @@ public class Enemy extends Entity {
 	
 	@Override
 	public void tick() {
+		// ------ Movimento não inteligente - usar com muitos inimigos
+		/*
 		if (this.calculateDistance(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 120) {
 			
 		if (this.isCollidingWithPlayer() == false) {
@@ -97,6 +97,19 @@ public class Enemy extends Entity {
 			}
 		}
 		}
+		*/
+		
+		// ------ movimento com inteligencia melhorada, pega o menor caminho
+		if (this.calculateDistance(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 120) {
+			if (path == null || path.size() == 0) {
+				Vector2i start = new Vector2i((int) x/World.TILE_SIZE, (int) y/World.TILE_SIZE);
+				Vector2i end = new Vector2i((int) Game.player.x/World.TILE_SIZE, (int) Game.player.y/World.TILE_SIZE);
+				path = AStart.findPath(Game.world, start, end);
+			}
+			
+			followPath(path);
+		}
+		
 		frames++;
 				
 		if (frames == maxFrames) {
@@ -112,7 +125,6 @@ public class Enemy extends Entity {
 		
 		if (this.life <= 0) {
 			Game.score.enemiesKill++;
-			
 			Game.enemies.remove(this);
 			Game.entities.remove(this);
 		}
@@ -124,7 +136,6 @@ public class Enemy extends Entity {
 				this.isDamaged = false;
 			}
 		}
-		
 	}
 	
 	public void collidingBullet() {
@@ -162,28 +173,10 @@ public class Enemy extends Entity {
 	}
 	
 	public boolean isCollidingWithPlayer() {
-		Rectangle enemyCurrent = new Rectangle(this.getX() + maskx, this.getY() + masky, maskw, maskh);
-		Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), maskw, maskh);
+		Rectangle enemyCurrent = new Rectangle(this.getX() + maskx, this.getY() + masky, mwidth, mheight);
+		Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), mwidth, mheight);
 		
 		return enemyCurrent.intersects(player);
-	}
-	
-	public boolean isColliding(int xnext, int ynext) {
-		Rectangle enemyCurrent = new Rectangle(xnext + maskx, ynext + masky, maskw, maskh);
-		
-		for (int i = 0; i < Game.enemies.size(); i++) {
-			Enemy e = Game.enemies.get(i);
-			if (e == this)
-				continue;
-			
-			Rectangle targetEnemy = new Rectangle(e.getX()+ maskx, e.getY() + masky, maskw, maskh);
-		
-			if (enemyCurrent.intersects(targetEnemy)) {
-				return true;
-			}
-		}
-		
-		return false;
 	}
 	
 	public void render(Graphics g) {

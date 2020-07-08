@@ -3,9 +3,12 @@ package com.devdragons.entities;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import com.devdragons.main.Game;
 import com.devdragons.world.Camera;
+import com.devdragons.world.Node;
+import com.devdragons.world.Vector2i;
 import com.devdragons.world.World;
 
 public class Entity {
@@ -18,10 +21,12 @@ public class Entity {
 	protected double z;
 	protected int width;
 	protected int height;
-	
-	private int maskx, masky, mwidth, mheight;
+
+	protected int maskx = 0, masky = 0, mwidth, mheight;
 	
 	private BufferedImage sprite;
+	
+	protected List<Node> path;
 	
 	public Entity(int x, int y, int width, int height, BufferedImage sprite)
 	{
@@ -77,6 +82,49 @@ public class Entity {
 	
 	public double calculateDistance(int x1, int y1, int x2, int y2) {
 		return Math.sqrt((x1 - x2 )* (x1 - x2) + (y1 - y2) * (y1 - y2));
+	}
+	
+	public void followPath(List<Node> path) {
+		
+		if(path != null) {
+			if (path.size() > 0) {
+				Vector2i target = path.get(path.size() - 1).tile;
+				// int xprev = x;
+				// int yprev = y;
+				
+				if (x < target.x * World.TILE_SIZE)
+					x++;
+				else if (x > target.x * World.TILE_SIZE)
+					x--;
+				
+				if(y < target.y * World.TILE_SIZE)
+					y++;
+				else if (y > target.y * World.TILE_SIZE)
+					y--;
+				
+				if (x == target.x * World.TILE_SIZE && y == target.y * World.TILE_SIZE) {
+					path.remove(path.size() -1);
+				}
+			}
+		}
+	}
+	
+	public boolean isColliding(int xnext, int ynext) {
+		Rectangle enemyCurrent = new Rectangle(xnext + maskx, ynext + masky, mwidth, mheight);
+		
+		for (int i = 0; i < Game.enemies.size(); i++) {
+			Enemy e = Game.enemies.get(i);
+			if (e == this)
+				continue;
+			
+			Rectangle targetEnemy = new Rectangle(e.getX()+ maskx, e.getY() + masky, mwidth, mheight);
+		
+			if (enemyCurrent.intersects(targetEnemy)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public static boolean isColliding(Entity e1, Entity e2) {

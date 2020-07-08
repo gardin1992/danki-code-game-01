@@ -215,6 +215,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 				break;
 			
 			case MENU:
+				player.updateCamera();
 				menu.tick();
 				break;
 				
@@ -270,22 +271,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	}
 	
 	// ------ trabalhando com pixels
-	/*
-	public void drawRectangleExample(int xoff, int yoff) {
-		for(int xx = 0; xx < 32; xx++) {
-			for(int yy = 0; yy < 32; yy++) {
-			
-				int xOff = xx + xoff;
-				int yOff = yy + yoff;
-				if (xOff < 0 || yOff < 0 || xOff >= WIDTH || yOff > HEIGHT)
-					continue;
-				
-				pixels[xOff + (yOff*WIDTH)] = 0xff0000;
-			}
-		}
-	}
-	*/
-	
 	public void applyLight() {
 		for(int xx = 0; xx < Game.WIDTH; xx++) {
 			for(int yy = 0; yy < Game.HEIGHT; yy++) {
@@ -310,9 +295,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		/* Render the game */
-
-	
 		world.render(g);
+		
 		for (int i = 0; i < entities.size(); i++)
 		{
 			Entity e = entities.get(i);
@@ -323,14 +307,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		{
 			bullets.get(i).render(g);
 		}
-		applyLight();
-		ui.render(g);
-		/***/
-		g.dispose();
-
 		
+		// applyLight();
+		ui.render(g);
+		
+		g.dispose();
 		g = bs.getDrawGraphics();
-
+		
 		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
 
 		g.setFont(fontText);
