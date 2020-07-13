@@ -230,7 +230,6 @@ public class World {
 	}
 	
 	public void tick () {
-		
 		zplayer = Game.player.z;
 	}
 	
@@ -238,7 +237,6 @@ public class World {
 		for(int i = 0; i < amount; i++) {
 			Game.entities.add(new Particle(x, y, 1, 1, null));
 		}
-		
 	}
 	
 	public static boolean isFreeDynamic(int xnext, int ynext, int width, int height) {

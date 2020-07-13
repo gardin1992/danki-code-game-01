@@ -32,6 +32,8 @@ public class Tile {
 	public static BufferedImage TILE_FLOOR_SAND = Game.spritesheet.getSprite(64, 496, World.TILE_SIZE, World.TILE_SIZE);
 	public static BufferedImage TILE_FLOOR_GRASS = Game.spritesheet.getSprite(112, 448, World.TILE_SIZE, World.TILE_SIZE);
 	
+	public boolean show = false;
+	
 	private BufferedImage sprite;
 	private int x, y;
 	
@@ -42,7 +44,8 @@ public class Tile {
 	}
 	
 	public void render(Graphics g) {
-		g.drawImage(sprite, x  - Camera.x, y  - Camera.y, null);
+		if (show)
+			g.drawImage(sprite, x  - Camera.x, y  - Camera.y, null);
 	}
 
 }

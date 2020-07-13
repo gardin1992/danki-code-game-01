@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.devdragons.entities.Weapon.WeaponTypes;
 import com.devdragons.main.Game;
-import com.devdragons.main.Sound;
 import com.devdragons.world.Camera;
 import com.devdragons.world.World;
 
@@ -123,7 +122,27 @@ public class Player extends Entity {
 		}
 	}
 	
+	public void revealMap() {
+		int xx = (int) (x/16);
+		int yy = (int) (y/16);
+		
+		World.tiles[xx-1+(yy*World.WIDTH)].show = true;
+		World.tiles[xx+yy*World.WIDTH].show = true;
+		World.tiles[xx+1+(yy*World.WIDTH)].show = true;
+		
+		World.tiles[xx+((yy+1)*World.WIDTH)].show = true;
+		World.tiles[xx+((yy-1)*World.WIDTH)].show = true;
+		
+		World.tiles[xx-1+((yy-1)*World.WIDTH)].show = true;
+		World.tiles[xx+1+((yy-1)*World.WIDTH)].show = true;
+		
+		World.tiles[xx-1+((yy+1)*World.WIDTH)].show = true;
+		World.tiles[xx+1+((yy+1)*World.WIDTH)].show = true;
+	}
+	
 	public void tick() {
+		
+		revealMap();
 		depth = 1;
 		tickJump();
 		
@@ -415,7 +434,6 @@ public class Player extends Entity {
 			
 			currentWeaponType = weapons.get(currentWeapon).weaponType;	
 		}
-		
 	}
 	
 	public void prevWeapon() {
@@ -428,6 +446,5 @@ public class Player extends Entity {
 			
 			currentWeaponType = weapons.get(currentWeapon).weaponType;
 		}
-		
 	}
 }
