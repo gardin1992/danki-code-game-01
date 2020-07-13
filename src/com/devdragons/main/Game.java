@@ -101,6 +101,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public int[] pixels;
 	public BufferedImage lightMap;
 	public int[] lightMapPixels;
+	public static int[] minimapPixels; 
+	public static BufferedImage minimapa;
 	
 	public int mx,my;
 	
@@ -162,9 +164,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
-		
-		world = new World("/"  + level);
 		entities.add(player);
+		world = new World("/"  + level);
+		minimapa = new BufferedImage(World.WIDHT, World.HEIGHT, BufferedImage.TYPE_INT_RGB);
+		minimapPixels = ((DataBufferInt) minimapa.getRaster().getDataBuffer()).getData();
+		
 	}
 	
 	public void initFrame() {
@@ -339,6 +343,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		g.setColor(Color.red);
 		g.fillRect(200, 200, 50, 50);
 		*/
+		World.renderMiniMap();
+		g.drawImage(minimapa, 480,80, World.WIDHT*5, World.HEIGHT*5, null);
 		bs.show();
 	}
 	
