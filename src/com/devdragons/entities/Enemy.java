@@ -116,7 +116,7 @@ public class Enemy extends Entity {
 		}
 		else {
 			if (Game.rand.nextInt(100) < 10) {
-				Sound.shootEffect.play();
+				// Sound.shootEffect.play();
 				Game.player.life -= damage;
 				Game.player.isDamaged = true;
 			}

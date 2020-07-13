@@ -62,7 +62,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static final int SCALE = 3;
 	
 	// ------ LEVEL
-	private int CUR_LEVEL = 3, MAX_LEVEL = 3;
+	private int CUR_LEVEL = 1, MAX_LEVEL = 3;
 	private BufferedImage image;
 	
 	// ------ LISTS
@@ -106,14 +106,21 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	
 	public int mx,my;
 	
+	public BufferedImage sprite1;
+	public BufferedImage sprite2;
+	public int[] pixels1;
+	public int[] pixels2;
+	public int x1 = 30, y1 = 90;
+	public int x2 = 100, y2 = 100;
+	
 	public Game() {
-		Sound.musicBackground.loop();
 		
 		rand = new Random();
 		
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		// setPreferredSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize()));
 		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		initFrame();
 		// init objects
@@ -132,6 +139,24 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		
 		initializeFonts();
 		initialized(getLevelName(CUR_LEVEL));
+		
+		// pixel perfect
+		try {
+			sprite1 = ImageIO.read(getClass().getResource("/sprite1.png")); 
+			sprite2 = ImageIO.read(getClass().getResource("/sprite2.png"));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		pixels1 = new int[sprite1.getWidth()*sprite1.getHeight()];
+		sprite1.getRGB(0, 0, sprite1.getWidth(), sprite2.getHeight(), pixels1, 0, sprite1.getWidth());
+		pixels2 = new int[sprite2.getWidth()*sprite2.getHeight()];
+		sprite2.getRGB(0, 0, sprite2.getWidth(), sprite1.getHeight(), pixels2, 0, sprite2.getWidth());
+		
+		if (pixels1[0] == 0x00000000) {
+			System.out.println("É transparente");
+		}
 	}
 	
 	public void initializeFonts() {
@@ -166,7 +191,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);
 		world = new World("/"  + level);
-		minimapa = new BufferedImage(World.WIDHT, World.HEIGHT, BufferedImage.TYPE_INT_RGB);
+		minimapa = new BufferedImage(World.WIDTH, World.HEIGHT, BufferedImage.TYPE_INT_RGB);
 		minimapPixels = ((DataBufferInt) minimapa.getRaster().getDataBuffer()).getData();
 		
 	}
@@ -174,11 +199,30 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public void initFrame() {
 		frame = new JFrame("Game #1");
 		frame.add(this);
+		// frame.setUndecorated(true);
 		frame.setResizable(false);
 		frame.pack();
+
+		
+		// Icone da janela
+		//Image image = null;
+		/*try {
+			// image = ImageIO.read(getClass().getResource("/icon.png"));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		*/
+		//frame.setIconImage(image);
+		//frame.setAlwaysOnTop(true);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		// cursor
+		//Toolkit toolkit = Toolkit.getDefaultToolkit();
+		// Image image = toolkit.getImage(getClass().getResource("/icon.png"));
+		// Cursor c = toolkit.createCustomCursor(image, new Point(0,0), "img");
+		// frame.setCursor(c);
+			
 	}
 	
 	public synchronized void start() {
@@ -281,7 +325,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			for(int yy = 0; yy < Game.HEIGHT; yy++) {
 				
 				if (lightMapPixels[xx+(yy * Game.WIDTH)] == 0xffffffff) {
-					pixels[xx+(yy*Game.WIDTH)] = 0;
+					int pixel = Pixel.getLightBlend(pixels[xx+(yy*Game.WIDTH)], 0x808080, 0);
+					pixels[xx+(yy*Game.WIDTH)] = pixel;
 				}
 			}
 		}
@@ -298,8 +343,12 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		Graphics g = image.getGraphics();
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
+		g.dispose();
+
+		g.drawImage(sprite1, x1, y1, null);
 		
-		/* Render the game */
+		/**
+		/* Render the game /
 		world.render(g);
 		Collections.sort(entities, Entity.nodeSorter);
 		for (int i = 0; i < entities.size(); i++)
@@ -312,14 +361,15 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		{
 			bullets.get(i).render(g);
 		}
-		
-		// applyLight();
 		ui.render(g);
+		applyLight();
 		
 		g.dispose();
 		g = bs.getDrawGraphics();
-		
+
+		// Render GAME Full screen
 		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+		// g.drawImage(image, 0,0, Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height, null);
 
 		g.setFont(fontText);
 		g.setColor(Color.white);
@@ -343,13 +393,16 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		g.setColor(Color.red);
 		g.fillRect(200, 200, 50, 50);
 		*/
-		World.renderMiniMap();
-		g.drawImage(minimapa, 480,80, World.WIDHT*5, World.HEIGHT*5, null);
+		// World.renderMiniMap();
+		// g.drawImage(minimapa, 480,80, World.WIDTH*5, World.HEIGHT*5, null);
 		bs.show();
 	}
 	
 	@Override
 	public void run() {
+		requestFocus();
+		Sound.music.loop();
+		
 		long lastTime = System.nanoTime();
 		final double amountOfTicks = 60.0;
 		double ns = 1000000000 / amountOfTicks;
@@ -518,5 +571,10 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		// ------- pegar posição do mouse
 		this.my = e.getX();
 		this.my = e.getY();
+	}
+	
+	// pixels perfect
+	public boolean isColliding(int x1, int y1, int x2, int y2, int[] pixels1, int[] pixels2) {
+		return false;
 	}
 }

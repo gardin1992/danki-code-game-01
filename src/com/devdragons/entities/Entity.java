@@ -153,6 +153,33 @@ public class Entity {
 			return true;
 		return false;
 	}
+	
+	public static boolean isCollidingPerfect(int x1, int y1, int x2, int y2, int[] pixels1, int[] pixels2, BufferedImage sprite1, BufferedImage sprite2) {
+		
+		for(int xx1 = 0; xx1 < sprite1.getWidth(); xx1++) {
+			for(int yy1 = 0; yy1 < sprite1.getHeight(); yy1++) {
+				
+				for(int xx2 = 0; xx2 < sprite2.getWidth(); xx2++) {
+					for(int yy2 = 0; yy2 < sprite2.getHeight(); yy2++) {
+						
+						int pixelAtual1 = pixels1[xx1 + (yy1*sprite1.getWidth())];
+						int pixelAtual2 = pixels2[xx2 + (yy2*sprite2.getWidth())];
+						
+						if (pixelAtual1 == 0x00ffffff || pixelAtual2 == 0x00ffffff)
+							continue ;
+						
+						if (xx1+x1 == xx2+x2 && yy1+y1 == yy2+y2) {
+							return true;
+						}
+						
+					}
+				}
+				
+			}
+		}
+		
+		return false;
+	}
 
 	public void render(Graphics g) {
 		g.drawImage(sprite, (int) this.getX() - Camera.x, (int) this.getY() - Camera.y, null);

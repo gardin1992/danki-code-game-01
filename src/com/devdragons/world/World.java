@@ -12,7 +12,7 @@ import com.devdragons.main.Game;
 public class World {
 	
 	public static Tile[] tiles;
-	public static int WIDHT, HEIGHT;
+	public static int WIDTH, HEIGHT;
 	public static final int TILE_SIZE = 16;
 	public static int zplayer = 0;
 	
@@ -47,7 +47,57 @@ public class World {
 	public static final int COLOR_WALL_BOTTOM_RIGHT = 0xFFFFEDF2;
 	public static final int COLOR_WALL_LEFT 		= 0xFFFFC4FF;
 	public static final int COLOR_WALL_RIGHT 		= 0xFFFFAAD2;
-	
+	/*
+	public World(String path) {
+		Game.player.setX(0);
+		Game.player.setY(0);
+		
+		WIDTH = 100;
+		HEIGHT = 100;
+		tiles = new Tile[WIDTH*HEIGHT];
+		
+		for (int xx = 0; xx < WIDTH; xx++) {
+			for (int yy = 0; yy < HEIGHT; yy++) {
+				tiles[xx+yy*WIDTH] = new WallTile(xx*16,yy*16, Tile.TILE_WALL);
+			}
+		}
+		
+		int dir = 0;
+		int xx = 0, yy = 0;
+				
+		for (int i = 0; i < 200; i++) {
+			tiles[xx+yy*WIDTH] = new FloorTile(xx*16,yy*16, Tile.TILE_FLOOR);
+			if (dir == 0) {
+				// direita
+				
+				if (xx < WIDTH) {
+					xx++;
+				}
+			} else if (dir == 1) {
+				// esquerda
+				if (xx > 0) {
+					xx--;
+				}
+			} else if (dir == 2) {
+				// baixo
+				if (yy < HEIGHT) {
+					yy++;
+				}
+			} else if (dir == 3) {
+				// cima
+				if (yy > 0) {
+					yy--;
+				}
+			}
+			
+			if (Game.rand.nextInt(100) < 30 ) {
+				dir = Game.rand.nextInt(4);
+			}
+			
+		
+		}
+	}
+	*/
 	
 	public World(String path) {
 		
@@ -55,7 +105,7 @@ public class World {
 			BufferedImage map = ImageIO.read(getClass().getResource(path));
 			
 			int[] pixels = new int[map.getWidth() * map.getHeight()];
-			WIDHT = map.getWidth();
+			WIDTH = map.getWidth();
 			HEIGHT = map.getHeight();
 			
 			tiles = new Tile[map.getWidth() * map.getHeight()];
@@ -65,67 +115,67 @@ public class World {
 				
 				for (int yy = 0; yy < map.getHeight(); yy++) {
 					int pixelAtual = pixels[xx + (yy * map.getWidth())];
-					tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_GRASS);
+					tiles[xx + (yy * WIDTH) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_GRASS);
 					
 					switch(pixelAtual) {
 						
 						case COLOR_SAND_FLOR:
-							tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_SAND);
+							tiles[xx + (yy * WIDTH) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_SAND);
 							break;	
 						case COLOR_WALL:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
 							break;
 						case COLOR_WALL_TOP_LEFT:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_TOP_LEFT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_TOP_LEFT);
 							break;
 						case COLOR_WALL_TOP_RIGHT:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_TOP_RIGHT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_TOP_RIGHT);
 							break;
 						case COLOR_WALL_BOTTOM_LEFT:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_BOTTOM_LEFT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_BOTTOM_LEFT);
 							break;
 						case COLOR_WALL_BOTTOM_RIGHT:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_BOTTOM_RIGHT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_BOTTOM_RIGHT);
 							break;
 						case COLOR_WALL_TOP:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_TOP);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_TOP);
 							break;
 						case COLOR_WALL_BOTTOM:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_BOTTOM);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_BOTTOM);
 							break;
 						case COLOR_WALL_RIGHT:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_RIGHT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_RIGHT);
 							break;
 						case COLOR_WALL_LEFT:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_LEFT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_LEFT);
 							break;
 							
 						case COLOR_WATHER_WALL:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER);
 							break;
 						case COLOR_WATHER_WALL_LEFT_TOP:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_TOP_LEFT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_TOP_LEFT);
 							break;
 						case COLOR_WATHER_WALL_RIGHT_TOP:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_TOP_RIGHT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_TOP_RIGHT);
 							break;
 						case COLOR_WATHER_WALL_LEFT_BOTTOM:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_BOTTOM_LEFT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_BOTTOM_LEFT);
 							break;
 						case COLOR_WATHER_WALL_RIGHT_BOTTOM:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_BOTTOM_RIGHT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_BOTTOM_RIGHT);
 							break;
 						case COLOR_WATHER_WALL_TOP:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_TOP);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_TOP);
 							break;
 						case COLOR_WATHER_WALL_BOTTOM:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_BOTTOM);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_BOTTOM);
 							break;
 						case COLOR_WATHER_WALL_RIGHT:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_RIGHT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_RIGHT);
 							break;
 						case COLOR_WATHER_WALL_LEFT:
-							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_LEFT);
+							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_LEFT);
 							break;
 							
 							
@@ -164,7 +214,7 @@ public class World {
 							Game.entities.add(lifepack);
 							break;
 						case COLOR_GRASS_FLOR:
-							tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_GRASS);
+							tiles[xx + (yy * WIDTH) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_GRASS);
 							break;
 							 
 					}
@@ -198,10 +248,10 @@ public class World {
 		int x4 = (xnext+TILE_SIZE-1) / TILE_SIZE;
 		int y4 = (ynext+TILE_SIZE-1) / TILE_SIZE;
 		
-		if (!((tiles[x1 + (y1*World.WIDHT)] instanceof WallTile)
-				|| (tiles[x2 + (y2*World.WIDHT)] instanceof WallTile)
-				|| (tiles[x3 + (y3*World.WIDHT)] instanceof WallTile)
-				|| (tiles[x4 + (y4*World.WIDHT)] instanceof WallTile)
+		if (!((tiles[x1 + (y1*World.WIDTH)] instanceof WallTile)
+				|| (tiles[x2 + (y2*World.WIDTH)] instanceof WallTile)
+				|| (tiles[x3 + (y3*World.WIDTH)] instanceof WallTile)
+				|| (tiles[x4 + (y4*World.WIDTH)] instanceof WallTile)
 				))
 		{
 			return true;
@@ -222,10 +272,10 @@ public class World {
 		for(int xx = xstart; xx <= xfinal; xx++) {
 			for(int yy = ystart; yy <= yfinal; yy++) {
 				
-				if (xx < 0 || yy < 0 || xx  >= WIDHT || yy >= HEIGHT)
+				if (xx < 0 || yy < 0 || xx  >= WIDTH || yy >= HEIGHT)
 					continue;
 				
-				Tile tile = tiles[xx + (yy * WIDHT)];
+				Tile tile = tiles[xx + (yy * WIDTH)];
 				tile.render(g);	
 			}
 		}
@@ -236,16 +286,16 @@ public class World {
 			Game.minimapPixels[i] = 0;
 		}
 		
-		for(int xx = 0; xx < WIDHT; xx++) {
-			for(int yy = 0; yy < WIDHT; yy++) {
-				if (tiles[xx + (yy * WIDHT)] instanceof WallTile) {
-					Game.minimapPixels[xx + (yy * WIDHT)] = 0xffff000;
+		for(int xx = 0; xx < WIDTH; xx++) {
+			for(int yy = 0; yy < WIDTH; yy++) {
+				if (tiles[xx + (yy * WIDTH)] instanceof WallTile) {
+					Game.minimapPixels[xx + (yy * WIDTH)] = 0xffff000;
 				}
 			}
 		}
 		
 		int xPlayer = Game.player.getX()/16;
 		int yPlayer = Game.player.getY()/16;
-		Game.minimapPixels[xPlayer + (yPlayer * WIDHT)] = 0xff0000ff;
+		Game.minimapPixels[xPlayer + (yPlayer * WIDTH)] = 0xff0000ff;
 	}
 }

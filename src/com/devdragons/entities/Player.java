@@ -197,7 +197,7 @@ public class Player extends Entity {
 	}
 	
 	public void updateCamera() {
-		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH/2), 0, World.WIDHT*16 - Game.WIDTH);
+		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH/2), 0, World.WIDTH*16 - Game.WIDTH);
 		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT/2), 0, World.HEIGHT*16 - Game.HEIGHT);
 	}
 	
@@ -275,11 +275,11 @@ public class Player extends Entity {
 				SkillBullet bullet = new SkillBullet(this.getX() + px, this.getY() + py, 3, 3, null, dx, dy);
 				Game.bullets.add(bullet);
 				
-				Sound.shootEffect.play();
+				// Sound.shootEffect.play();
 			}
 		}
 		else if (currentWeaponType == WeaponTypes.SWORD) {
-			Sound.swordEffect.play();
+			// Sound.swordEffect.play();
 			
 			SkillSword sword = new SkillSword(this.getX(), this.getY(), 16, 16, null);
 			Game.swords.add(sword);
