@@ -177,8 +177,7 @@ public class World {
 						case COLOR_WATHER_WALL_LEFT:
 							tiles[xx + (yy * WIDTH) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_LEFT);
 							break;
-							
-							
+						//
 						case COLOR_PLAYER:
 							Game.player.setX(xx*TILE_SIZE);
 							Game.player.setY(xx*TILE_SIZE);
@@ -233,6 +232,33 @@ public class World {
 	public void tick () {
 		
 		zplayer = Game.player.z;
+	}
+	
+	public static boolean isFreeDynamic(int xnext, int ynext, int width, int height) {
+		int x1=  xnext / TILE_SIZE;
+		int y1 = ynext / TILE_SIZE;
+		
+		int x2 = (xnext+width-1) / TILE_SIZE;
+		int y2 = ynext / TILE_SIZE;
+		
+		int x3 = xnext / TILE_SIZE;
+		int y3 = (ynext+height-1) / TILE_SIZE;
+		
+		int x4 = (xnext+width-1) / TILE_SIZE;
+		int y4 = (ynext+height-1) / TILE_SIZE;
+		
+		if (!((tiles[x1 + (y1*World.WIDTH)] instanceof WallTile)
+				|| (tiles[x2 + (y2*World.WIDTH)] instanceof WallTile)
+				|| (tiles[x3 + (y3*World.WIDTH)] instanceof WallTile)
+				|| (tiles[x4 + (y4*World.WIDTH)] instanceof WallTile)
+				))
+		{
+			return true;
+		}
+		
+		if (zplayer > 0)
+			return true;
+		return false;
 	}
 	
 	public static boolean isFree(int xnext, int ynext) {

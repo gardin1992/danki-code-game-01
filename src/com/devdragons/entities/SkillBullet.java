@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import com.devdragons.main.Game;
 import com.devdragons.world.Camera;
+import com.devdragons.world.World;
 
 public class SkillBullet extends Entity {
 	
@@ -22,8 +23,14 @@ public class SkillBullet extends Entity {
 	}
 	
 	public void tick() {
-		x += dx*spd;
-		y += dy*spd;
+		if (World.isFreeDynamic((int) (x+(dx*spd)), (int) (y+(dy*spd)), 3,3) ) {
+			x += dx*spd;
+			y += dy*spd;
+		} else {
+			Game.bullets.remove(this);
+			Game.entities.remove(this);
+			return ;
+		}
 		
 		curLife++;
 		
