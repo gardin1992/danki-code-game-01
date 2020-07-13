@@ -27,6 +27,7 @@ public class SkillBullet extends Entity {
 			x += dx*spd;
 			y += dy*spd;
 		} else {
+			World.generateParticles(100, this.getX(), this.getY());
 			Game.bullets.remove(this);
 			Game.entities.remove(this);
 			return ;

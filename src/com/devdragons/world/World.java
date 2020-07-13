@@ -234,6 +234,13 @@ public class World {
 		zplayer = Game.player.z;
 	}
 	
+	public static void generateParticles(int amount, int x, int y) {
+		for(int i = 0; i < amount; i++) {
+			Game.entities.add(new Particle(x, y, 1, 1, null));
+		}
+		
+	}
+	
 	public static boolean isFreeDynamic(int xnext, int ynext, int width, int height) {
 		int x1=  xnext / TILE_SIZE;
 		int y1 = ynext / TILE_SIZE;
