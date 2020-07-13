@@ -298,4 +298,8 @@ public class World {
 		int yPlayer = Game.player.getY()/16;
 		Game.minimapPixels[xPlayer + (yPlayer * WIDTH)] = 0xff0000ff;
 	}
+	
+	public static double calculateDistance(int x1, int y1, int x2, int y2) {
+		return Math.sqrt((x1 - x2 )* (x1 - x2) + (y1 - y2) * (y1 - y2));
+	}
 }

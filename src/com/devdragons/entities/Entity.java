@@ -17,8 +17,8 @@ public class Entity {
 	public static BufferedImage LIFEPACK_EN = Game.spritesheet.getSprite(6*World.TILE_SIZE, 0, World.TILE_SIZE, World.TILE_SIZE);
 	public static BufferedImage BULLET_EN = Game.spritesheet.getSprite(7*World.TILE_SIZE, 32, World.TILE_SIZE, World.TILE_SIZE);
 	
-	protected double x;
-	protected double y;
+	public double x;
+	public double y;
 	protected double z;
 	protected int width;
 	protected int height;

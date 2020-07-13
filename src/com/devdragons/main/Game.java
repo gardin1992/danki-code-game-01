@@ -87,6 +87,14 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	private boolean showMessageGameOver = true, restartGame = false;
 	private int framesGameOver = 0, maxFramesGameOver = 30;
 	
+	// ------ Cutscene
+	public static int entrada = 1;
+	public static int comecar = 2;
+	public static int jogando = 3;
+	public static int estado_cena = entrada;
+	// --- dialog
+	public static NPC npc;
+	
 	// ------ Menu
 	private Menu menu;
 	public boolean saveGame = false;
@@ -105,13 +113,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static BufferedImage minimapa;
 	
 	public int mx,my;
-	
-	public BufferedImage sprite1;
-	public BufferedImage sprite2;
-	public int[] pixels1;
-	public int[] pixels2;
-	public int x1 = 30, y1 = 90;
-	public int x2 = 100, y2 = 100;
 	
 	public Game() {
 		
@@ -139,24 +140,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		
 		initializeFonts();
 		initialized(getLevelName(CUR_LEVEL));
-		
-		// pixel perfect
-		try {
-			sprite1 = ImageIO.read(getClass().getResource("/sprite1.png")); 
-			sprite2 = ImageIO.read(getClass().getResource("/sprite2.png"));
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		
-		pixels1 = new int[sprite1.getWidth()*sprite1.getHeight()];
-		sprite1.getRGB(0, 0, sprite1.getWidth(), sprite2.getHeight(), pixels1, 0, sprite1.getWidth());
-		pixels2 = new int[sprite2.getWidth()*sprite2.getHeight()];
-		sprite2.getRGB(0, 0, sprite2.getWidth(), sprite1.getHeight(), pixels2, 0, sprite2.getWidth());
-		
-		if (pixels1[0] == 0x00000000) {
-			System.out.println("É transparente");
-		}
 	}
 	
 	public void initializeFonts() {
@@ -194,35 +177,19 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		minimapa = new BufferedImage(World.WIDTH, World.HEIGHT, BufferedImage.TYPE_INT_RGB);
 		minimapPixels = ((DataBufferInt) minimapa.getRaster().getDataBuffer()).getData();
 		
+		npc = new NPC(32, 32,World.TILE_SIZE, World.TILE_SIZE, spritesheet.getSprite(32, 32, World.TILE_SIZE, World.TILE_SIZE));
+		entities.add(npc);
 	}
+	
 	
 	public void initFrame() {
 		frame = new JFrame("Game #1");
 		frame.add(this);
-		// frame.setUndecorated(true);
 		frame.setResizable(false);
 		frame.pack();
-
-		
-		// Icone da janela
-		//Image image = null;
-		/*try {
-			// image = ImageIO.read(getClass().getResource("/icon.png"));
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-		*/
-		//frame.setIconImage(image);
-		//frame.setAlwaysOnTop(true);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		// cursor
-		//Toolkit toolkit = Toolkit.getDefaultToolkit();
-		// Image image = toolkit.getImage(getClass().getResource("/icon.png"));
-		// Cursor c = toolkit.createCustomCursor(image, new Point(0,0), "img");
-		// frame.setCursor(c);
-			
 	}
 	
 	public synchronized void start() {
@@ -273,24 +240,45 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 				score.tick();
 				restartGame = false;
 				
-				if (this.saveGame) {
-					this.saveGame = false;
+				if (Game.estado_cena == Game.jogando) {
+				
+					if (this.saveGame) {
+						this.saveGame = false;
+						
+						String[] opt1 = {"level"};
+						int[] opt2 = {this.CUR_LEVEL};
+						Menu.saveGame(opt1, opt2, 10);
+						System.out.println("Jogo salvo com sucesso");
+					}
 					
-					String[] opt1 = {"level"};
-					int[] opt2 = {this.CUR_LEVEL};
-					Menu.saveGame(opt1, opt2, 10);
-					System.out.println("Jogo salvo com sucesso");
-				}
+					for (int i = 0; i < entities.size(); i++)
+					{
+						Entity e = entities.get(i);
+						e.tick();
+					}
+					
+					for (int i = 0; i < bullets.size(); i++)
+					{
+						bullets.get(i).tick();
+					}
 				
-				for (int i = 0; i < entities.size(); i++)
-				{
-					Entity e = entities.get(i);
-					e.tick();
-				}
-				
-				for (int i = 0; i < bullets.size(); i++)
-				{
-					bullets.get(i).tick();
+				} else {
+					if (Game.estado_cena == Game.entrada) {
+						if (player.getX() < 200) {
+							player.x++;
+						}
+						else {
+							Game.estado_cena = Game.comecar;
+						}
+					}
+					else if (Game.estado_cena == Game.comecar) {
+						System.out.print("Começando");
+						// timeCena++
+						/*if (timeCena == maxTimeCena) {
+							Game.estado_cena = Game.jogando
+						}*/
+						Game.estado_cena = Game.jogando;
+					}
 				}
 				
 				if (enemies.size() == 0) {
@@ -343,12 +331,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		Graphics g = image.getGraphics();
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
-		g.dispose();
-
-		g.drawImage(sprite1, x1, y1, null);
 		
-		/**
-		/* Render the game /
+		/* Render the game */
 		world.render(g);
 		Collections.sort(entities, Entity.nodeSorter);
 		for (int i = 0; i < entities.size(); i++)
@@ -361,15 +345,14 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		{
 			bullets.get(i).render(g);
 		}
+		
+		// applyLight();
 		ui.render(g);
-		applyLight();
 		
 		g.dispose();
 		g = bs.getDrawGraphics();
-
-		// Render GAME Full screen
+		
 		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
-		// g.drawImage(image, 0,0, Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height, null);
 
 		g.setFont(fontText);
 		g.setColor(Color.white);
@@ -385,6 +368,10 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			default: score.render(g); break;
 		}
 		
+		// if (Game.estado_cena == Game.comecar) {
+		// g.drawString("Se prepare, jogo vai começar", 50, 50);
+		// }
+		
 		// --- rotação acompanhando o mouse
 		/*
 		Graphics2D g2 = (Graphics2D) g;
@@ -393,8 +380,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		g.setColor(Color.red);
 		g.fillRect(200, 200, 50, 50);
 		*/
-		// World.renderMiniMap();
-		// g.drawImage(minimapa, 480,80, World.WIDTH*5, World.HEIGHT*5, null);
+		World.renderMiniMap();
+		g.drawImage(minimapa, 480,80, World.WIDTH*5, World.HEIGHT*5, null);
 		bs.show();
 	}
 	
@@ -445,6 +432,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			npc.showMessage = false;
+		}
+		
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			player.jump = true;
 		}
