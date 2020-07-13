@@ -18,6 +18,7 @@ import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -61,7 +62,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static final int SCALE = 3;
 	
 	// ------ LEVEL
-	private int CUR_LEVEL = 1, MAX_LEVEL = 3;
+	private int CUR_LEVEL = 3, MAX_LEVEL = 3;
 	private BufferedImage image;
 	
 	// ------ LISTS
@@ -296,7 +297,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		
 		/* Render the game */
 		world.render(g);
-		
+		Collections.sort(entities, Entity.nodeSorter);
 		for (int i = 0; i < entities.size(); i++)
 		{
 			Entity e = entities.get(i);

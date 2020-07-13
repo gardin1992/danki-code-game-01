@@ -3,6 +3,7 @@ package com.devdragons.entities;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Comparator;
 import java.util.List;
 
 import com.devdragons.main.Game;
@@ -21,6 +22,8 @@ public class Entity {
 	protected double z;
 	protected int width;
 	protected int height;
+	
+	public int depth;
 
 	protected int maskx = 0, masky = 0, mwidth, mheight;
 	
@@ -41,6 +44,21 @@ public class Entity {
 		this.mheight = height;
 		this.mwidth = width;
 	}
+	
+	public static Comparator<Entity> nodeSorter = new Comparator<Entity>() {
+		@Override
+		public int compare(Entity n0, Entity n1) {
+			if (n1.depth < n0.depth) {
+				return +1;
+			}
+			
+			if (n1.depth > n0.depth) {
+				return -1;
+			}
+			
+			return 0;
+		}
+	};
 	
 	public void setMask(int maskx, int masky, int mwidth, int mheight) {
 		this.maskx = maskx;
@@ -91,7 +109,7 @@ public class Entity {
 				Vector2i target = path.get(path.size() - 1).tile;
 				// int xprev = x;
 				// int yprev = y;
-				
+				// if (x < target.x * World.TILE_SIZE && !isColliding(this.getX() +1, this.getY()))
 				if (x < target.x * World.TILE_SIZE)
 					x++;
 				else if (x > target.x * World.TILE_SIZE)

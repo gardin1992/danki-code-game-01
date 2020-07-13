@@ -16,7 +16,38 @@ public class World {
 	public static final int TILE_SIZE = 16;
 	public static int zplayer = 0;
 	
-	public static final int COLOR_FLOR = 0xFF000000;
+	public static final int COLOR_PLAYER		= 0xFF0026FF;
+	public static final int COLOR_SWORD 		= 0xFF00FFFF;
+	public static final int COLOR_WEAPON		= 0xFF0094FF;
+	public static final int COLOR_BULLET		= 0xFFFFD800;
+	// deixar apenas uma cor para inimigo e gerar os inimigos diferentes randonicamente
+	public static final int COLOR_GOBLIN_ENEMY	= 0xFFFF6A00;
+	public static final int COLOR_SLIME_ENEMY	= 0xFFFF0000;
+	public static final int COLOR_LIFEPACK 		= 0xFF4CFF00;
+	// ----- Sand
+	public static final int COLOR_SAND_FLOR 	= 0xFF404040;
+	public static final int COLOR_GRASS_FLOR 	= 0xFF000000;
+	// ----- WATHER
+	public static final int COLOR_WATHER_WALL 				= 0xFFF7FCFF;
+	public static final int COLOR_WATHER_WALL_LEFT_TOP 		= 0xFFB5D2FF;
+	public static final int COLOR_WATHER_WALL_RIGHT_TOP 	= 0xFFD0C1FF;
+	public static final int COLOR_WATHER_WALL_TOP 			= 0xFFDDDDFF;
+	public static final int COLOR_WATHER_WALL_LEFT 			= 0xFFD8F2FF;
+	public static final int COLOR_WATHER_WALL_RIGHT 		= 0xFFCEE3FF;
+	public static final int COLOR_WATHER_WALL_BOTTOM 		= 0xFFC9E5FF;
+	public static final int COLOR_WATHER_WALL_LEFT_BOTTOM 	= 0xFFBACFFF;
+	public static final int COLOR_WATHER_WALL_RIGHT_BOTTOM 	= 0xFFADC5FF;
+	// ---- Wall
+	public static final int COLOR_WALL 				= 0xFFFFFFFF;
+	public static final int COLOR_WALL_TOP 			= 0xFFFF56B0;
+	public static final int COLOR_WALL_TOP_LEFT 	= 0xFFFF93F2;
+	public static final int COLOR_WALL_TOP_RIGHT 	= 0xFFFF77A4;
+	public static final int COLOR_WALL_BOTTOM 		= 0xFFFFE8FA;
+	public static final int COLOR_WALL_BOTTOM_LEFT 	= 0xFFFFF9FC;
+	public static final int COLOR_WALL_BOTTOM_RIGHT = 0xFFFFEDF2;
+	public static final int COLOR_WALL_LEFT 		= 0xFFFFC4FF;
+	public static final int COLOR_WALL_RIGHT 		= 0xFFFFAAD2;
+	
 	
 	public World(String path) {
 		
@@ -34,68 +65,108 @@ public class World {
 				
 				for (int yy = 0; yy < map.getHeight(); yy++) {
 					int pixelAtual = pixels[xx + (yy * map.getWidth())];
-					tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
+					tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_GRASS);
 					
 					switch(pixelAtual) {
-						case 0xFF000000: 
-							// floor
-							tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_GRASS); 
-							break;
-						case 0xFFfbefef:
+						
+						case COLOR_SAND_FLOR:
 							tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_SAND);
 							break;	
-						case 0xFFFFFFFF:
-							// wall
+						case COLOR_WALL:
 							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
 							break;
-						case 0xFF8ad4e4:
-							// wather
+						case COLOR_WALL_TOP_LEFT:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_TOP_LEFT);
+							break;
+						case COLOR_WALL_TOP_RIGHT:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_TOP_RIGHT);
+							break;
+						case COLOR_WALL_BOTTOM_LEFT:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_BOTTOM_LEFT);
+							break;
+						case COLOR_WALL_BOTTOM_RIGHT:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_BOTTOM_RIGHT);
+							break;
+						case COLOR_WALL_TOP:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_TOP);
+							break;
+						case COLOR_WALL_BOTTOM:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_BOTTOM);
+							break;
+						case COLOR_WALL_RIGHT:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_RIGHT);
+							break;
+						case COLOR_WALL_LEFT:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL_LEFT);
+							break;
+							
+						case COLOR_WATHER_WALL:
 							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER);
 							break;
-						case 0xFF373f7E: 
-							// player
+						case COLOR_WATHER_WALL_LEFT_TOP:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_TOP_LEFT);
+							break;
+						case COLOR_WATHER_WALL_RIGHT_TOP:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_TOP_RIGHT);
+							break;
+						case COLOR_WATHER_WALL_LEFT_BOTTOM:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_BOTTOM_LEFT);
+							break;
+						case COLOR_WATHER_WALL_RIGHT_BOTTOM:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_BOTTOM_RIGHT);
+							break;
+						case COLOR_WATHER_WALL_TOP:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_TOP);
+							break;
+						case COLOR_WATHER_WALL_BOTTOM:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_BOTTOM);
+							break;
+						case COLOR_WATHER_WALL_RIGHT:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_RIGHT);
+							break;
+						case COLOR_WATHER_WALL_LEFT:
+							tiles[xx + (yy * WIDHT) ] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WATER_LEFT);
+							break;
+							
+							
+						case COLOR_PLAYER:
 							Game.player.setX(xx*TILE_SIZE);
 							Game.player.setY(xx*TILE_SIZE);
 							break;
-						case 0xFFFF2600:
-							// enemy
+						case COLOR_SLIME_ENEMY:
 							Enemy en = new EnemySlime(xx*TILE_SIZE, yy*TILE_SIZE, TILE_SIZE, TILE_SIZE, Enemy.SLIME_EN);
-							
 							Game.enemies.add(en);
 							Game.entities.add(en);
 							break;
-						case 0xFFE62200:
-							// enemy goblin
+						case COLOR_GOBLIN_ENEMY:
 							Enemy goblin = new EnemyGoblin(xx*TILE_SIZE, yy*TILE_SIZE, TILE_SIZE, TILE_SIZE, Enemy.GOBLIN_EN);
-							
 							Game.enemies.add(goblin);
 							Game.entities.add(goblin);
 							break;
-						case 0xFFD76A3B:
-							// weapon
+						case COLOR_WEAPON:
 							WeaponGun weapon = new WeaponGun(xx*TILE_SIZE, yy*TILE_SIZE, TILE_SIZE, TILE_SIZE, Weapon.WEAPON_EN);
 							Game.entities.add(weapon);
 							Game.weapons.add(weapon);
 							break;
-						case 0xFF6d57A0:
+						case COLOR_SWORD:
 							WeaponSword sword = new WeaponSword(xx*TILE_SIZE, yy*TILE_SIZE, TILE_SIZE, TILE_SIZE, Weapon.SWORD_EN);
 							Game.entities.add(sword);
 							Game.weapons.add(sword);
 							break;
-						case 0xFFFFDA5A:
-							// bullets
+						case COLOR_BULLET:
 							Ammo bullet = new Ammo(xx*TILE_SIZE, yy*TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.BULLET_EN);
 							Game.entities.add(bullet);
 							Game.ammos.add(bullet);
 							break;
-						case 0xFFC46390:
-							// lifepack
+						case COLOR_LIFEPACK:
 							Lifepack lifepack = new Lifepack(xx*TILE_SIZE, yy*TILE_SIZE, TILE_SIZE,TILE_SIZE, Entity.LIFEPACK_EN);
 							Game.lifepacks.add(lifepack);
 							Game.entities.add(lifepack);
 							break;
-						default:
-							tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR); 
+						case COLOR_GRASS_FLOR:
+							tiles[xx + (yy * WIDHT) ] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR_GRASS);
+							break;
+							 
 					}
 				}
 			}

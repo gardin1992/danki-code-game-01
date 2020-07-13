@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.devdragons.main.Game;
+import com.devdragons.main.Sound;
 import com.devdragons.world.AStart;
 import com.devdragons.world.Camera;
 import com.devdragons.world.Vector2i;
@@ -52,6 +53,12 @@ public class Enemy extends Entity {
 	
 	@Override
 	public void tick() {
+		mwidth = 8;
+		mheight = 8;
+		maskx = 8;
+		masky = 8;
+		depth = 0;
+		
 		// ------ Movimento não inteligente - usar com muitos inimigos
 		/*
 		if (this.calculateDistance(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 120) {
@@ -100,14 +107,28 @@ public class Enemy extends Entity {
 		*/
 		
 		// ------ movimento com inteligencia melhorada, pega o menor caminho
-		if (this.calculateDistance(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 120) {
+		if (!isCollidingWithPlayer()) {
 			if (path == null || path.size() == 0) {
 				Vector2i start = new Vector2i((int) x/World.TILE_SIZE, (int) y/World.TILE_SIZE);
 				Vector2i end = new Vector2i((int) Game.player.x/World.TILE_SIZE, (int) Game.player.y/World.TILE_SIZE);
 				path = AStart.findPath(Game.world, start, end);
 			}
-			
+		}
+		else {
+			if (Game.rand.nextInt(100) < 10) {
+				Sound.shootEffect.play();
+				Game.player.life -= damage;
+				Game.player.isDamaged = true;
+			}
+		}
+		
+		if (Game.rand.nextInt(100) < 60)
 			followPath(path);
+		
+		if (Game.rand.nextInt(100) < 5) {
+			Vector2i start = new Vector2i((int) x/World.TILE_SIZE, (int) y/World.TILE_SIZE);
+			Vector2i end = new Vector2i((int) Game.player.x/World.TILE_SIZE, (int) Game.player.y/World.TILE_SIZE);
+			path = AStart.findPath(Game.world, start, end);
 		}
 		
 		frames++;
@@ -194,5 +215,7 @@ public class Enemy extends Entity {
 			else if (dir == left_dir)
 				g.drawImage(leftDamage, this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
+		
+		// g.fillRect(this.getX() + maskx - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 	}
 }
